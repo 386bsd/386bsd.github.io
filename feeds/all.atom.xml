@@ -1,4 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>William Jolitz's 386bsd Notebook</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2018-12-26T10:53:00-08:00</updated><entry><title>About-this-386bsd-notebook</title><link href="/About-this-386bsd-notebook.html" rel="alternate"></link><published>2018-12-26T10:52:00-08:00</published><updated>2018-12-26T10:53:00-08:00</updated><author><name>William Jolitz</name></author><id>tag:None,2018-12-26:/About-this-386bsd-notebook.html</id><summary type="html">&lt;p&gt;This blog's about my 386bsd "stuff" - past, present, future.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I've been putting all my 386bsd archives into github as "work in progress" project. It'll take some time, as it's dozens of drives, cdrom's and hundreds of floppies. I'd like to say it's all nicely, chronologically ordered, but ... boxes of loose materials in an idiosyncratic form. So I'm just throwing it up and integrating it into the github repo as I make sense of things, as I've time.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>William Jolitz's 386bsd Notebook</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2018-12-28T11:51:00-08:00</updated><entry><title>About this 386bsd notebook</title><link href="/tracking-down-random-jam-tale.html" rel="alternate"></link><published>2018-12-28T11:51:00-08:00</published><updated>2018-12-26T11:52:00-08:00</updated><author><name>William Jolitz</name></author><id>tag:None,2018-12-28:/tracking-down-random-jam-tale.html</id><summary type="html">&lt;p&gt;How a random hang in the 386bsd kernel was found, and ways to diagnose that were used. First tale.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Took me months to track down an irritating hang. The exact same kernel would work perfectly, then not. On certain hardware/VM's it would never fail, on others it would never work, and on some it would be "in between", sort of like a certain children's story (Goldilocks and the Three Bears).&lt;/p&gt;
+&lt;p&gt;If you want to avoid "TL;DR", put this bit of assembler in locore.s before swtch() relies on interrupts to wake up the next process:&lt;/p&gt;
+&lt;p&gt;```
+    cli /&lt;em&gt; begin reset 8259's &lt;/em&gt;/
+    movb $0x11, %al
+    outb %al, $0x20
+    movb $0x20, %al
+    outb %al, $0x21
+    movb $0x04, %al
+    outb %al, $0x21
+    movb $0x01, %al
+    outb %al, $0x21
+    movb $0xff, %al
+    outb %al, $0x21
+    movb $0x02, %al
+    outb %al, $0x20&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;movb $0x11, %al
+outb %al, $0xa0
+movb $0x28, %al
+outb %al, $0xa1
+movb $0x02, %al
+outb %al, $0xa1
+movb $0x01, %al
+outb %al, $0xa1
+movb $0xff, %al
+outb %al, $0xa1
+movb $0x02, %al
+outb %al, $0xa0
+
+call    _wdredo
+sti /* end reset 8259&amp;#39;s */
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;```&lt;/p&gt;
+&lt;p&gt;The quick answer was that the 8259 PIC's (X86 original interrupt control unit) state was getting trashed. So by finding this out and forcing reinitilization (plus forcing a "redo" of a potentially "lost" disk interrupt), the random hangs didn't happen. (Left out for brevity are the necessary 'write posts' and 'read delays' for marginal chipsets that required bus setup and hold "recovery" time to properly function).&lt;/p&gt;
+&lt;p&gt;The longer answer is the more interesting part - how do you track down such, where do you look, what are you up against, and how to get to the bottom of why this happens, so that this is correctly mitigated.&lt;/p&gt;
+&lt;p&gt;The 8259 is a cranky design - hidden registers you can't read only write, certain operations only in a specific order, many implementations with different flaws. With the earliest version of 386bsd, the only "recipe" that was stable was one that DOS (and later Windows) used, and often was suboptimal. Which didn't matter because early PC's functioned erratically due to cost evasion - "busy waiting" and no DMA common.&lt;/p&gt;
+&lt;p&gt;Didn't have hypervisors and X86 VM's then, or the memory to allow them (2MB 16Mhz ISA motherboard). But now that I do, checking the 8259's internal state showed it was set improperly when jammed, otherwise fine. So blindly resetting it when needed like above made it work.&lt;/p&gt;
+&lt;p&gt;Modifying the VM's code itself let me find where the program counter was when the change occurred. It was on recovery from stray interrupts, another misfeature of the 8259. If an interrupt is signalled but appears to be withdrawn (not there) when handled, it's considered a stray interrupt, which can happen before or after or not with a true handled interrupt (had they afforded a tiny stack in the 8259 to record state, but this was back when every single gate was minimized so as to increase the number of dice per wafer).&lt;/p&gt;
+&lt;p&gt;This explains why it was inconsistent in presentation - the hang/no hang was idiosyncratic, depending on timing. With the VM emulator, switching between cpu types would allow it to work, then not, because the effective "sampling" would be different, just like with different hardware chipsets/speed/delays.&lt;/p&gt;
+&lt;p&gt;How far down the "rathole" do you go with a open source system to support architecture flaws? Clearly enough to allow it to be useful, but at some point it obfuscates both clarity of the code as well as performance. Current Spectre/Meltdown/other bugs tickle this for modern systems to a much greater degree, as they reach into and distort things that are otherwise clear, and will have to be tediously phased out in time.&lt;/p&gt;
+&lt;p&gt;So why did this take months? Because it wasn't clear what the problem was at first. One casts about with many theories before becoming desperate enough to go "low level" for hours in debugging to capture the above mentioned event's "cold case".&lt;/p&gt;
+&lt;p&gt;With the corrected code in place, the above patch removed, things work as they should. Now one goes through all the collateral code/notes and sees how all handing of interrupts is being done, to spot other surprises.&lt;/p&gt;</content><category term="first"></category><category term="386bsd"></category><category term="tale"></category></entry><entry><title>About this 386bsd notebook</title><link href="/About-this-386bsd-notebook.html" rel="alternate"></link><published>2018-12-26T10:52:00-08:00</published><updated>2018-12-26T13:27:00-08:00</updated><author><name>William Jolitz</name></author><id>tag:None,2018-12-26:/About-this-386bsd-notebook.html</id><summary type="html">&lt;p&gt;This blog's about my 386bsd "stuff" - past, present, future.&lt;/p&gt;</summary><content type="html">&lt;p&gt;I've been putting all my 386bsd archives into github as "work in progress" project. It'll take some time, as it's dozens of drives, cdrom's and hundreds of floppies. I'd like to say it's all nicely, chronologically ordered, but ... boxes of loose materials in an idiosyncratic form. So I'm just throwing it up and integrating it into the github repo as I make sense of things, as I've time.&lt;/p&gt;
 &lt;p&gt;This is a &lt;em&gt;"notebook"&lt;/em&gt; of things as I do this, an amalgum of memories, findings, debugging, opinion, observation, and retrospection.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;A big thank you to fans/users of 386bsd, my coauthor Lynne, son Benjamin, and daughter Rebecca who have encouraged me to accomplish this.&lt;/strong&gt;&lt;/p&gt;</content><category term="beginning"></category><category term="386bsd"></category><category term="notebook"></category><category term="about"></category></entry></feed>
