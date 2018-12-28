@@ -48,7 +48,7 @@
 		<p>Took me months to track down an irritating hang. The exact same kernel would work perfectly, then not. On certain hardware/VM's it would never fail, on others it would never work, and on some it would be "in between", sort of like a certain children's story (Goldilocks and the Three Bears).</p>
 <p>If you want to avoid "TL;DR", put this bit of assembler in locore.s before swtch() relies on interrupts to wake up the next process:</p>
 <p>```
-    cli /<em> begin reset 8259's </em>/
+    cli /<em> begin reset 8259s </em>/
     movb $0x11, %al
     outb %al, $0x20
     movb $0x20, %al
@@ -75,7 +75,7 @@ movb $0x02, %al
 outb %al, $0xa0
 
 call    _wdredo
-sti /* end reset 8259&#39;s */
+sti /* end reset 8259s */
 </pre></div>
 
 

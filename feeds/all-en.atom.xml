@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>William Jolitz's 386bsd Notebook</title><link href="/" rel="alternate"></link><link href="/feeds/all-en.atom.xml" rel="self"></link><id>/</id><updated>2018-12-28T11:51:00-08:00</updated><entry><title>Tracking down random jam</title><link href="/tracking-down-random-jam-tale.html" rel="alternate"></link><published>2018-12-28T11:51:00-08:00</published><updated>2018-12-26T11:52:00-08:00</updated><author><name>William Jolitz</name></author><id>tag:None,2018-12-28:/tracking-down-random-jam-tale.html</id><summary type="html">&lt;p&gt;How a random hang in the 386bsd kernel was found, and ways to diagnose that were used. First tale.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Took me months to track down an irritating hang. The exact same kernel would work perfectly, then not. On certain hardware/VM's it would never fail, on others it would never work, and on some it would be "in between", sort of like a certain children's story (Goldilocks and the Three Bears).&lt;/p&gt;
 &lt;p&gt;If you want to avoid "TL;DR", put this bit of assembler in locore.s before swtch() relies on interrupts to wake up the next process:&lt;/p&gt;
 &lt;p&gt;```
-    cli /&lt;em&gt; begin reset 8259's &lt;/em&gt;/
+    cli /&lt;em&gt; begin reset 8259s &lt;/em&gt;/
     movb $0x11, %al
     outb %al, $0x20
     movb $0x20, %al
@@ -29,7 +29,7 @@ movb $0x02, %al
 outb %al, $0xa0
 
 call    _wdredo
-sti /* end reset 8259&amp;#39;s */
+sti /* end reset 8259s */
 &lt;/pre&gt;&lt;/div&gt;
 
 
