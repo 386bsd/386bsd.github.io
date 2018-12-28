@@ -38,35 +38,35 @@
         <h1><a href="/tracking-down-random-jam-tale.html">Tracking down random jam</a></h1>
         <p>Took me months to track down an irritating hang. The exact same kernel would work perfectly, then not. On certain hardware/VM's it would never fail, on others it would never work, and on some it would be "in between", sort of like a certain children's story (Goldilocks and the Three Bears).</p>
 <p>If you want to avoid "TL;DR", put this bit of assembler in locore.s before swtch() relies on interrupts to wake up the next process:</p>
-<div class="highlight"><pre><span></span>    cli /* begin reset 8259&#39;s */
-    movb $0x11, %al
-    outb %al, $0x20
-    movb $0x20, %al
-    outb %al, $0x21
-    movb $0x04, %al
-    outb %al, $0x21
-    movb $0x01, %al
-    outb %al, $0x21
-    movb $0xff, %al
-    outb %al, $0x21
-    movb $0x02, %al
-    outb %al, $0x20
+<div class="highlight"><pre><span></span>    <span class="nf">cli</span> <span class="err">/</span><span class="p">*</span> <span class="no">begin</span> <span class="no">reset</span> <span class="mi">8259</span><span class="err">&#39;</span><span class="no">s</span> <span class="p">*</span><span class="err">/</span>
+    <span class="nf">movb</span> <span class="no">$0x11</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x20</span>
+    <span class="nf">movb</span> <span class="no">$0x20</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
+    <span class="nf">movb</span> <span class="no">$0x04</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
+    <span class="nf">movb</span> <span class="no">$0x01</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
+    <span class="nf">movb</span> <span class="no">$0xff</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
+    <span class="nf">movb</span> <span class="no">$0x02</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x20</span>
 
-    movb $0x11, %al
-    outb %al, $0xa0
-    movb $0x28, %al
-    outb %al, $0xa1
-    movb $0x02, %al
-    outb %al, $0xa1
-    movb $0x01, %al
-    outb %al, $0xa1
-    movb $0xff, %al
-    outb %al, $0xa1
-    movb $0x02, %al
-    outb %al, $0xa0
+    <span class="nf">movb</span> <span class="no">$0x11</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa0</span>
+    <span class="nf">movb</span> <span class="no">$0x28</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
+    <span class="nf">movb</span> <span class="no">$0x02</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
+    <span class="nf">movb</span> <span class="no">$0x01</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
+    <span class="nf">movb</span> <span class="no">$0xff</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
+    <span class="nf">movb</span> <span class="no">$0x02</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa0</span>
 
-    call _wdredo
-    sti
+    <span class="nf">call</span> <span class="no">_wdredo</span>
+    <span class="nf">sti</span>
 </pre></div>
 
 
