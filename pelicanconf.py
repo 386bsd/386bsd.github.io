@@ -6,13 +6,13 @@ AUTHOR = 'William Jolitz'
 SITENAME = "William Jolitz's 386bsd Notebook"
 SITEURL = 'https://386bsd.github.io'
 
-# MARKDOWN = {
-#     'extension_configs': {
-#         'markdown.extensions.extra': {},
-#         'markdown.extensions.meta': {},
-#     },
-#     'output_format': 'html5',
-# }
+MARKDOWN = {
+     'extension_configs': {
+         'markdown.extensions.extra': {},
+         'markdown.extensions.meta': {},
+     },
+     'output_format': 'html5',
+}
 
 PATH = 'content'
 

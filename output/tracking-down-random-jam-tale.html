@@ -2,9 +2,12 @@
 <html lang="">	
 <head>
 	<meta charset="utf-8"/>
-	<title>William Jolitz's 386bsd Notebook</title>	
+	<title>Tracking down random jam - William Jolitz's 386bsd Notebook</title>	
 	<meta name="author" content="William Jolitz">
 	
+
+	<meta name="description" content="How a random hang in the 386bsd kernel was found, and ways to diagnose that were used. First tale.">
+
 
 	<link rel="top" href="#" /><link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic|Source+Code+Pro' rel='stylesheet' type='text/css'></link>
 	<link rel="stylesheet" href="/theme/css/main.css" type="text/css" />
@@ -35,12 +38,18 @@
 	  <div class="wrapper">
 
 		  <div role="main" class="content">
-
-
-
-      <article>
-        <h1><a href="/tracking-down-random-jam-tale.html">Tracking down random jam</a></h1>
-        <p>Took me months to track down an irritating hang. The exact same kernel would work perfectly, then not. On certain hardware/VM's it would never fail, on others it would never work, and on some it would be "in between", sort of like a certain children's story (Goldilocks and the Three Bears).</p>
+	<article class="full">
+			
+		<h1>Tracking down random jam</h1>
+		
+<div class="metadata">
+  <time datetime="2018-12-28T11:51:00-08:00" pubdate>Fri 28 December 2018</time>
+    <address class="vcard author">
+      by <a class="url fn" href="/author/william-jolitz.html">William Jolitz</a>
+    </address>
+  in <a href="/category/tale.html">tale</a>
+<p class="tags">tagged <a href="/tag/first.html">first</a>, <a href="/tag/386bsd.html">386bsd</a>, <a href="/tag/tale.html">tale</a></p></div>		
+		<p>Took me months to track down an irritating hang. The exact same kernel would work perfectly, then not. On certain hardware/VM's it would never fail, on others it would never work, and on some it would be "in between", sort of like a certain children's story (Goldilocks and the Three Bears).</p>
 <p>If you want to avoid "TL;DR", put this bit of assembler in locore.s before swtch() relies on interrupts to wake up the next process:</p>
 <pre><code class="c">
     cli  /* begin reset 8259's */
@@ -82,25 +91,15 @@
 <p>This explains why it was inconsistent in presentation - the hang/no hang was idiosyncratic, depending on timing. With the VM emulator, switching between cpu types would allow it to work, then not, because the effective "sampling" would be different, just like with different hardware chipsets/speed/delays.</p>
 <p>How far down the "rathole" do you go with a open source system to support architecture flaws? Clearly enough to allow it to be useful, but at some point it obfuscates both clarity of the code as well as performance. Current Spectre/Meltdown/other bugs tickle this for modern systems to a much greater degree, as they reach into and distort things that are otherwise clear, and will have to be tediously phased out in time.</p>
 <p>So why did this take months? Because it wasn't clear what the problem was at first. One casts about with many theories before becoming desperate enough to go "low level" for hours in debugging to capture the above mentioned event's "cold case".</p>
-<p>With the corrected code in place, the above patch removed, things work as they should. Now one goes through all the collateral code/notes and sees how all handing of interrupts is being done, to spot other surprises.</p>
-      </article>
+<p>With the corrected code in place, the above patch removed, things work as they should. Now one goes through all the collateral code/notes and sees how all handing of interrupts is being done, to spot other surprises.</p>	
 
-      <hr />
+	</article>
 
-        <div>
-          <h3>Last posts</h3>
-          <ol class="archive">
-    
+    <p>
+	<a href="https://twitter.com/share" class="twitter-share-button" data-via="" data-lang="en" data-size="large" data-related="">Tweet</a>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+	</p>
 
-
-      <li>
-<a href="/About-this-386bsd-notebook.html" rel="bookmark" title="Permalink to About this 386bsd notebook">About this 386bsd notebook</a>
-  <time datetime="2018-12-26T10:52:00-08:00" pubdate>Wed 26 December 2018</time>
-<p class="tags">tags: <a href="/tag/beginning.html">beginning</a><a href="/tag/386bsd.html">386bsd</a><a href="/tag/notebook.html">notebook</a><a href="/tag/about.html">about</a></p></a>      </li>
-
-
-          </ol>
-        </div>
 
 		  </div>	
 		  
@@ -110,7 +109,7 @@
 	          <h2>Categories</h2>
 	          <ul>
 	              <li ><a href="/category/about.html">about</a></li>
-	              <li ><a href="/category/tale.html">tale</a></li>
+	              <li class="active"><a href="/category/tale.html">tale</a></li>
 	          </ul>
 	        </nav>
 
