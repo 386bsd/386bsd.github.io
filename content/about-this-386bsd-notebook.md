@@ -1,7 +1,7 @@
 ----
-Title: About-this-386bsd-notebook
+Title: About this 386bsd notebook
 Date: 2018-12-26 10:52
-Modified: 2018-12-26 10:53
+Modified: 2018-12-26 13:27
 Category: about
 Tags: beginning, 386bsd, notebook, about
 Slug: About-this-386bsd-notebook

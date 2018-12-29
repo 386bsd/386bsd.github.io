@@ -7,11 +7,11 @@
 	
 
 	<link rel="top" href="#" /><link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic|Source+Code+Pro' rel='stylesheet' type='text/css'></link>
-	<link rel="stylesheet" href="https://386bsd.github.io/theme/css/main.css" type="text/css" />
-		
+	<link rel="stylesheet" href="/theme/css/main.css" type="text/css" />
 
-    <link href="https://386bsd.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="William Jolitz's 386bsd Notebook Atom Feed" />
-    <link href="https://386bsd.github.io/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="William Jolitz's 386bsd Notebook RSS Feed" />
+
+    <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="William Jolitz's 386bsd Notebook Atom Feed" />
+    <link href="/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="William Jolitz's 386bsd Notebook RSS Feed" />
 </head>
 	
 <body>
@@ -20,12 +20,12 @@
 	  
 	  <header role="banner">
 	    <div class="feeds">
-	        <a href="https://386bsd.github.io/feeds/all.atom.xml" rel="alternate"><img src="https://386bsd.github.io/theme/images/icons/feed-32px.png" alt="atom feed"/></a>
-            <a href="https://386bsd.github.io/feeds/all.rss.xml" rel="alternate"><img src="https://386bsd.github.io/theme/images/icons/feed-32px.png" alt="rss feed"/></a>
+	        <a href="/feeds/all.atom.xml" rel="alternate"><img src="/theme/images/icons/feed-32px.png" alt="atom feed"/></a>
+            <a href="/feeds/all.rss.xml" rel="alternate"><img src="/theme/images/icons/feed-32px.png" alt="rss feed"/></a>
 	    </div>
 	      <nav class="pages">
 	      </nav>
-		<a href="https://386bsd.github.io" class="title">William Jolitz's 386bsd Notebook</a>
+		<a href="" class="title">William Jolitz's 386bsd Notebook</a>
       </header>
 	
 	  <div class="wrapper">
@@ -35,17 +35,68 @@
 
 
       <article>
-        <h1><a href="https://386bsd.github.io/About-this-386bsd-notebook.html">About-this-386bsd-notebook</a></h1>
-        <p>I've been putting all my 386bsd archives into github as "work in progress" project. It'll take some time, as it's dozens of drives, cdrom's and hundreds of floppies. I'd like to say it's all nicely, chronologically ordered, but ... boxes of loose materials in an idiosyncratic form. So I'm just throwing it up and integrating it into the github repo as I make sense of things, as I've time.</p>
-<p>This is a <em>"notebook"</em> of things as I do this, an amalgum of memories, findings, debugging, opinion, observation, and retrospection.</p>
-<p><strong>A big thank you to fans/users of 386bsd, my coauthor Lynne, son Benjamin, and daughter Rebecca who have encouraged me to accomplish this.</strong></p>
+        <h1><a href="/tracking-down-random-jam-tale.html">Tracking down random jam</a></h1>
+        <p>Took me months to track down an irritating hang. The exact same kernel would work perfectly, then not. On certain hardware/VM's it would never fail, on others it would never work, and on some it would be "in between", sort of like a certain children's story (Goldilocks and the Three Bears).</p>
+<p>If you want to avoid "TL;DR", put this bit of assembler in locore.s before swtch() relies on interrupts to wake up the next process:</p>
+<div class="highlight"><pre><span></span>    <span class="nf">cli</span>  <span class="c"># begin reset 8259&#39;s</span>
+    <span class="nf">movb</span> <span class="no">$0x11</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x20</span>
+    <span class="nf">movb</span> <span class="no">$0x20</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
+    <span class="nf">movb</span> <span class="no">$0x04</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
+    <span class="nf">movb</span> <span class="no">$0x01</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
+    <span class="nf">movb</span> <span class="no">$0xff</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
+    <span class="nf">movb</span> <span class="no">$0x02</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x20</span>
+
+    <span class="nf">movb</span> <span class="no">$0x11</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa0</span>
+    <span class="nf">movb</span> <span class="no">$0x28</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
+    <span class="nf">movb</span> <span class="no">$0x02</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
+    <span class="nf">movb</span> <span class="no">$0x01</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
+    <span class="nf">movb</span> <span class="no">$0xff</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
+    <span class="nf">movb</span> <span class="no">$0x02</span><span class="p">,</span> <span class="nv">%al</span>
+    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa0</span>
+
+    <span class="nf">call</span> <span class="no">_wdredo</span>
+    <span class="nf">sti</span>
+</pre></div>
+
+
+<p>The quick answer was that the 8259 PIC's (X86 original interrupt control unit) state was getting trashed. So by finding this out and forcing reinitilization (plus forcing a "redo" of a potentially "lost" disk interrupt), the random hangs didn't happen. (Left out for brevity are the necessary 'write posts' and 'read delays' for marginal chipsets that required bus setup and hold "recovery" time to properly function).</p>
+<p>The longer answer is the more interesting part - how do you track down such, where do you look, what are you up against, and how to get to the bottom of why this happens, so that this is correctly mitigated.</p>
+<p>The 8259 is a cranky design - hidden registers you can't read only write, certain operations only in a specific order, many implementations with different flaws. With the earliest version of 386bsd, the only "recipe" that was stable was one that DOS (and later Windows) used, and often was suboptimal. Which didn't matter because early PC's functioned erratically due to cost evasion - "busy waiting" and no DMA common.</p>
+<p>Didn't have hypervisors and X86 VM's then, or the memory to allow them (2MB 16Mhz ISA motherboard). But now that I do, checking the 8259's internal state showed it was set improperly when jammed, otherwise fine. So blindly resetting it when needed like above made it work.</p>
+<p>Modifying the VM's code itself let me find where the program counter was when the change occurred. It was on recovery from stray interrupts, another misfeature of the 8259. If an interrupt is signalled but appears to be withdrawn (not there) when handled, it's considered a stray interrupt, which can happen before or after or not with a true handled interrupt (had they afforded a tiny stack in the 8259 to record state, but this was back when every single gate was minimized so as to increase the number of dice per wafer).</p>
+<p>This explains why it was inconsistent in presentation - the hang/no hang was idiosyncratic, depending on timing. With the VM emulator, switching between cpu types would allow it to work, then not, because the effective "sampling" would be different, just like with different hardware chipsets/speed/delays.</p>
+<p>How far down the "rathole" do you go with a open source system to support architecture flaws? Clearly enough to allow it to be useful, but at some point it obfuscates both clarity of the code as well as performance. Current Spectre/Meltdown/other bugs tickle this for modern systems to a much greater degree, as they reach into and distort things that are otherwise clear, and will have to be tediously phased out in time.</p>
+<p>So why did this take months? Because it wasn't clear what the problem was at first. One casts about with many theories before becoming desperate enough to go "low level" for hours in debugging to capture the above mentioned event's "cold case".</p>
+<p>With the corrected code in place, the above patch removed, things work as they should. Now one goes through all the collateral code/notes and sees how all handing of interrupts is being done, to spot other surprises.</p>
       </article>
 
       <hr />
 
+        <div>
+          <h3>Last posts</h3>
+          <ol class="archive">
     
 
 
+      <li>
+<a href="/About-this-386bsd-notebook.html" rel="bookmark" title="Permalink to About this 386bsd notebook">About this 386bsd notebook</a>
+  <time datetime="2018-12-26T10:52:00-08:00" pubdate>Wed 26 December 2018</time>
+<p class="tags">tags: <a href="/tag/beginning.html">beginning</a><a href="/tag/386bsd.html">386bsd</a><a href="/tag/notebook.html">notebook</a><a href="/tag/about.html">about</a></p></a>      </li>
+
+
+          </ol>
+        </div>
 
 		  </div>	
 		  
@@ -54,7 +105,8 @@
 	        <nav>
 	          <h2>Categories</h2>
 	          <ul>
-	              <li ><a href="https://386bsd.github.io/category/about.html">about</a></li>
+	              <li ><a href="/category/about.html">about</a></li>
+	              <li ><a href="/category/tale.html">tale</a></li>
 	          </ul>
 	        </nav>
 
@@ -69,6 +121,7 @@
 	            <h2>Links</h2>
 	            <ul>
 	                <li><a href="https://386bsd.org">386bsd</a></li>
+	                <li><a href="https://github.com/386bsd/386bsd">386bsd repository</a></li>
 	            </ul>
 	          </aside>
 

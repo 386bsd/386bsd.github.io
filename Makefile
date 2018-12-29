@@ -1,6 +1,7 @@
 PY?=python3
 PELICAN?=pelican
 PELICANOPTS= -t ../pelican-simplegrey
+#PELICANOPTS= -t ../pelican-smoothie
 
 BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content

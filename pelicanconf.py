@@ -6,6 +6,14 @@ AUTHOR = 'William Jolitz'
 SITENAME = "William Jolitz's 386bsd Notebook"
 SITEURL = 'https://386bsd.github.io'
 
+# MARKDOWN = {
+#     'extension_configs': {
+#         'markdown.extensions.extra': {},
+#         'markdown.extensions.meta': {},
+#     },
+#     'output_format': 'html5',
+# }
+
 PATH = 'content'
 
 TIMEZONE = 'America/Los_Angeles'
@@ -19,7 +27,9 @@ AUTHOR_FEED_RSS = 'feeds/{slug}.rss.xml'
 RSS_FEED_SUMMARY_ONLY = False
 
 # Blogroll
-LINKS = (('386bsd', 'https://386bsd.org'),)
+LINKS = (('386bsd', 'https://386bsd.org'),
+         ('386bsd repository', 'https://github.com/386bsd/386bsd'),
+        )
 
 # Social widget
 SOCIAL = (('linkedin', 'https://www.linkedin.com/in/williamjolitz/'),)
