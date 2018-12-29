@@ -12,6 +12,10 @@
 	<link rel="top" href="#" /><link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic|Source+Code+Pro' rel='stylesheet' type='text/css'></link>
 	<link rel="stylesheet" href="/theme/css/main.css" type="text/css" />
 
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/default.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
 
     <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="William Jolitz's 386bsd Notebook Atom Feed" />
     <link href="/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="William Jolitz's 386bsd Notebook RSS Feed" />
@@ -47,37 +51,37 @@
 <p class="tags">tagged <a href="/tag/first.html">first</a>, <a href="/tag/386bsd.html">386bsd</a>, <a href="/tag/tale.html">tale</a></p></div>		
 		<p>Took me months to track down an irritating hang. The exact same kernel would work perfectly, then not. On certain hardware/VM's it would never fail, on others it would never work, and on some it would be "in between", sort of like a certain children's story (Goldilocks and the Three Bears).</p>
 <p>If you want to avoid "TL;DR", put this bit of assembler in locore.s before swtch() relies on interrupts to wake up the next process:</p>
-<div class="highlight"><pre><span></span>    <span class="nf">cli</span>  <span class="c"># begin reset 8259&#39;s</span>
-    <span class="nf">movb</span> <span class="no">$0x11</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x20</span>
-    <span class="nf">movb</span> <span class="no">$0x20</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
-    <span class="nf">movb</span> <span class="no">$0x04</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
-    <span class="nf">movb</span> <span class="no">$0x01</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
-    <span class="nf">movb</span> <span class="no">$0xff</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x21</span>
-    <span class="nf">movb</span> <span class="no">$0x02</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x20</span>
+<pre><code class="c">
+    cli  /* begin reset 8259's */
+    movb $0x11, %al
+    outb %al, $0x20
+    movb $0x20, %al
+    outb %al, $0x21
+    movb $0x04, %al
+    outb %al, $0x21
+    movb $0x01, %al
+    outb %al, $0x21
+    movb $0xff, %al
+    outb %al, $0x21
+    movb $0x02, %al
+    outb %al, $0x20
 
-    <span class="nf">movb</span> <span class="no">$0x11</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa0</span>
-    <span class="nf">movb</span> <span class="no">$0x28</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
-    <span class="nf">movb</span> <span class="no">$0x02</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
-    <span class="nf">movb</span> <span class="no">$0x01</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
-    <span class="nf">movb</span> <span class="no">$0xff</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa1</span>
-    <span class="nf">movb</span> <span class="no">$0x02</span><span class="p">,</span> <span class="nv">%al</span>
-    <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0xa0</span>
+    movb $0x11, %al
+    outb %al, $0xa0
+    movb $0x28, %al
+    outb %al, $0xa1
+    movb $0x02, %al
+    outb %al, $0xa1
+    movb $0x01, %al
+    outb %al, $0xa1
+    movb $0xff, %al
+    outb %al, $0xa1
+    movb $0x02, %al
+    outb %al, $0xa0
 
-    <span class="nf">call</span> <span class="no">_wdredo</span>
-    <span class="nf">sti</span>
-</pre></div>
-
+    call _wdredo
+    sti
+</code></pre>
 
 <p>The quick answer was that the 8259 PIC's (X86 original interrupt control unit) state was getting trashed. So by finding this out and forcing reinitilization (plus forcing a "redo" of a potentially "lost" disk interrupt), the random hangs didn't happen. (Left out for brevity are the necessary 'write posts' and 'read delays' for marginal chipsets that required bus setup and hold "recovery" time to properly function).</p>
 <p>The longer answer is the more interesting part - how do you track down such, where do you look, what are you up against, and how to get to the bottom of why this happens, so that this is correctly mitigated.</p>
