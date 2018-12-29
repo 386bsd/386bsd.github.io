@@ -11,7 +11,7 @@
 
 	<link rel="top" href="#" /><link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic|Source+Code+Pro' rel='stylesheet' type='text/css'></link>
 	<link rel="stylesheet" href="/theme/css/main.css" type="text/css" />
-		
+
 
     <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="William Jolitz's 386bsd Notebook Atom Feed" />
     <link href="/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="William Jolitz's 386bsd Notebook RSS Feed" />
@@ -47,7 +47,7 @@
 <p class="tags">tagged <a href="/tag/first.html">first</a>, <a href="/tag/386bsd.html">386bsd</a>, <a href="/tag/tale.html">tale</a></p></div>		
 		<p>Took me months to track down an irritating hang. The exact same kernel would work perfectly, then not. On certain hardware/VM's it would never fail, on others it would never work, and on some it would be "in between", sort of like a certain children's story (Goldilocks and the Three Bears).</p>
 <p>If you want to avoid "TL;DR", put this bit of assembler in locore.s before swtch() relies on interrupts to wake up the next process:</p>
-<div class="highlight"><pre><span></span>    <span class="nf">cli</span> <span class="err">/</span><span class="p">*</span> <span class="no">begin</span> <span class="no">reset</span> <span class="mi">8259</span><span class="err">&#39;</span><span class="no">s</span> <span class="p">*</span><span class="err">/</span>
+<div class="highlight"><pre><span></span>    <span class="nf">cli</span>  <span class="c"># begin reset 8259&#39;s</span>
     <span class="nf">movb</span> <span class="no">$0x11</span><span class="p">,</span> <span class="nv">%al</span>
     <span class="nf">outb</span> <span class="nv">%al</span><span class="p">,</span> <span class="no">$0x20</span>
     <span class="nf">movb</span> <span class="no">$0x20</span><span class="p">,</span> <span class="nv">%al</span>
