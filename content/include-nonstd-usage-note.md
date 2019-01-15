@@ -1,7 +1,7 @@
 ----
 Title: Include 'nonstd' Usage Note
 Date: 2019-01-15 12:46
-Modified: 2019-01-15 13:18
+Modified: 2019-01-15 14:35
 Category: note
 Tags: first, 386bsd, tale
 Slug: include-nonstd-usage-note
@@ -15,7 +15,7 @@ On top of that, one of the points of 1.0 was to separate out stuff so that old/n
 
 The basic idea was to keep pathnames solely in build tools, and just allow include/interface files to be embedded in code, where they would be satisfied by include paths directed through nonstd, ahead of other/primary includes.
 
-Put back in the README in /usr/include/nonstd to document this (normally there are no README's in the include hierarchy).
+Put back in the [README](https://github.com/386bsd/386bsd/blob/1.0/usr/include/nonstd/README) in [/usr/include/nonstd](https://github.com/386bsd/386bsd/tree/1.0/usr/include/nonstd) to document this (normally there are no README's in the include hierarchy).
 
 It's not a perfect means of doing this, because of name collisions. But it was "good enough" for the expedient of getting on with the shuffle of old out, newer in place, then what was desired to replace it refactored in.
 
