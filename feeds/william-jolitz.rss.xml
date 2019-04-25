@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"><channel><title>William Jolitz's 386bsd Notebook - William Jolitz</title><link>/</link><description></description><lastBuildDate>Thu, 25 Apr 2019 15:35:00 -0700</lastBuildDate><item><title>Commit on missing "privilege" Note</title><link>/commit-on-missing-privilege-note.html</link><description>&lt;p&gt;Came across an omission when testing LBA support for 386BSD (shush - that's for later, as 386bsd only supported CHS).
-There was a missing privledge, easily added in.&lt;/p&gt;
+There was a missing privledge, &lt;a href="https://github.com/386bsd/386bsd/commit/0299693e520ff85b61f10b10c1c406a16b125c5d"&gt;easily added in&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Literally there are thousands of things that happen when you do an system release.
 Everytime you'd do a release (I did them for Berkeley on the PDP 11, for National Semiconductor on the NS16032, a vareity of start-ups, and ... 386bsd of course).
 You'd get used to a stream of emails with "add this in here, it does this".
