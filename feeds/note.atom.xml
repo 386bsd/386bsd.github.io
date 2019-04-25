@@ -1,12 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>William Jolitz's 386bsd Notebook - note</title><link href="/" rel="alternate"></link><link href="/feeds/note.atom.xml" rel="self"></link><id>/</id><updated>2019-01-15T14:35:00-08:00</updated><entry><title>Include 'nonstd' Usage Note</title><link href="/include-nonstd-usage-note.html" rel="alternate"></link><published>2019-01-15T12:46:00-08:00</published><updated>2019-01-15T14:35:00-08:00</updated><author><name>William Jolitz</name></author><id>tag:None,2019-01-15:/include-nonstd-usage-note.html</id><summary type="html">&lt;p&gt;Documenting point of the 1.0+ /usr/include/nonstd "tree" for access to nonstandard include files to not overlay standard ones.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the rush that nearly every BSD release entailed, things get forgotten. With 1.0, much was going in and much was going out. I'd found that keeping track of all the shibboleths present, in both catagories, was a major nusance.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>William Jolitz's 386bsd Notebook - note</title><link href="/" rel="alternate"></link><link href="/feeds/note.atom.xml" rel="self"></link><id>/</id><updated>2019-04-25T14:35:00-07:00</updated><entry><title>Commit on missing "privilege" Note</title><link href="/commit-on-missing-privilege-note.html" rel="alternate"></link><published>2019-04-25T10:27:00-07:00</published><updated>2019-04-25T14:35:00-07:00</updated><author><name>William Jolitz</name></author><id>tag:None,2019-04-25:/commit-on-missing-privilege-note.html</id><summary type="html">&lt;p&gt;Discussing Role-Based Security and 386BSD's role in introducing innovation on the operating system security model.&lt;/p&gt;</summary><content type="html">&lt;p&gt;Came across an omission when testing LBA support for 386BSD (shush - that's for later, as 386bsd only supported CHS).
+There was a missing privledge, easily added in.&lt;/p&gt;
+&lt;p&gt;Literally there are thousands of things that happen when you do an system release.
+Everytime you'd do a release (I did them for Berkeley on the PDP 11, for National Semiconductor on the NS16032, a vareity of start-ups, and ... 386bsd of course).
+You'd get used to a stream of emails with "add this in here, it does this".
+They'd be concious of the fact that you'd be overloaded, so they'd carefully think about the omission, how to word it, ... because they'd be afraid.
+That it wouldn't make it into the next release because it was too obtuse (or wrong) or time consuming, so it would be skipped.
+I never knew how valuable this was, and took it for granted.&lt;/p&gt;
+&lt;p&gt;One of the surprises with 386BSD was that the volume of such "input" was exponentially more (not that surprising) as well as "not" carefully thought.
+They'd decided it was "customer support", not assisting a research project (carefully labeled such from the start, to avoid this confusion).
+And with the magazine CDROM, by contract support and rerelease of any follow-ons were the responsibility of the publisher.
+(We'd done a product (Symmetric S/375 Symmetrix) with $1K/unit bundled support contracts, so we knew this from the start.)
+We were just involved with improving the research on 386BSD. 
+All of this didn't matter.&lt;/p&gt;
+&lt;p&gt;Role based security and 386BSD was mentioned in our Dr Dobbs article 
+&lt;a href="https://386bsd.org/releases/rolebased-network-security-network-security-at-the-operatingsystem-level-article"&gt;Network security at the operating-system level&lt;/a&gt;a,
+and later in Chapter 7 of The Basic Kernel book, Source Code Secrets series.&lt;/p&gt;
+&lt;p&gt;Most didn't bother to read anything, where the main point of 386BSD being a "living example" was dead to them.
+That's why the article series, talks, and books were being generated.
+So they would be read and used.&lt;/p&gt;
+&lt;p&gt;Apparently that wasn't understood.&lt;/p&gt;
+&lt;p&gt;So the only reference I could find to this "bug" had the guy ripping out the role based security, instead of the teeny, tiny commit that you see it needed.&lt;/p&gt;
+&lt;p&gt;The "why" behind role based security is another story entirely.&lt;/p&gt;
+&lt;p&gt;It came out of my consulting on operating systems security.
+I had done the architecture for B1 labelled security for government systems, including those by Hewlett Packard.
+These systems had huge bit vectors of discrete privilege "bits", that were unweildy to manage.&lt;/p&gt;
+&lt;p&gt;In the "Orange" and "Green" books (government NCSC) they suggested these might be "compressed" into "roles".
+And that these roles might be assigned to secure paths of access.
+As independent to cryptography/secrets/passwords/credentials.
+Some of us thought that any code could be broken (or subverted).
+But if you structured things around access path, your could reduce exposure.&lt;/p&gt;
+&lt;p&gt;Post 0.1 386BSD releases were under a barrage of criticism.
+That certain research work wasn't but someone elses ideas.
+So suddenly much that wasn't on the development agenda suddenly needed to be justified.&lt;/p&gt;
+&lt;p&gt;The most simplified version of role based security was added in, and we expected we'd miss much.
+From the book:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Section 7.2, bottom of page 352" src="/image/the_basic_kernel_7_2a.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Section 7.2, top of page 353" src="/image/the_basic_kernel_7_2b.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;In other words, it was a demonstration of the concept with the direct benefit of reducing the scope of even compromising root over any network.
+Not the end by any means, but an illustration of a beginning.&lt;/p&gt;
+&lt;p&gt;This allows for an intermediate gateway to interpose for access (like the way a fileserver functions), an RPC tracer, an insertion of an audit log, and a back call framework into the user space library to allow a security library to take action on potential intrusion.&lt;/p&gt;
+&lt;p&gt;So, a stub that other things could attach to.&lt;/p&gt;
+&lt;p&gt;Since this was written, several million intrusions into BSD systems, including OpenBSD, have occured that was the point of this stub and framework. How far should this be continued is something I'm considering.&lt;/p&gt;
+&lt;p&gt;Perhaps a reason for reading articles, books, and alternative approaches. Or even ... notebook entries? Take care.&lt;/p&gt;</content><category term="first"></category><category term="386bsd"></category><category term="tale"></category></entry><entry><title>Include 'nonstd' Usage Note</title><link href="/include-nonstd-usage-note.html" rel="alternate"></link><published>2019-01-15T12:46:00-08:00</published><updated>2019-01-15T14:35:00-08:00</updated><author><name>William Jolitz</name></author><id>tag:None,2019-01-15:/include-nonstd-usage-note.html</id><summary type="html">&lt;p&gt;Documenting point of the 1.0+ /usr/include/nonstd "tree" for access to nonstandard include files to not overlay standard ones.&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the rush that nearly every BSD release entailed, things get forgotten. With 1.0, much was going in and much was going out. I'd found that keeping track of all the shibboleths present, in both catagories, was a major nusance.
 It also didn't help that for various reasons things were being dragged off in different directions in the basic include files, where whole trees of them were being retained simply to keep coherence on each of these.&lt;/p&gt;
 &lt;p&gt;On top of that, one of the points of 1.0 was to separate out stuff so that old/new could be factored out/in smoothly w/o messing up standards coherence. So part of this was /usr/include/nonstd. One place to collect up these differences.&lt;/p&gt;
 &lt;p&gt;The basic idea was to keep pathnames solely in build tools, and just allow include/interface files to be embedded in code, where they would be satisfied by include paths directed through nonstd, ahead of other/primary includes.&lt;/p&gt;
 &lt;p&gt;Put back in the &lt;a href="https://github.com/386bsd/386bsd/blob/1.0/usr/include/nonstd/README"&gt;README&lt;/a&gt; in &lt;a href="https://github.com/386bsd/386bsd/tree/1.0/usr/include/nonstd"&gt;/usr/include/nonstd&lt;/a&gt; to document this (normally there are no README's in the include hierarchy).&lt;/p&gt;
 &lt;p&gt;It's not a perfect means of doing this, because of name collisions. But it was "good enough" for the expedient of getting on with the shuffle of old out, newer in place, then what was desired to replace it refactored in.&lt;/p&gt;
 &lt;p&gt;Originally, 386bsd started just as a means to keep alive a bit rotted BSD only running on obsolete VAX/CCI Power machines, thus had a lot of cruft that still persists to this day in all other BSDs. The "0." releases were labeled such because they were a holding pattern, where the intent was for the discord of the moment to wane, and people would put things back into "one BSD" afterward. There wasn't supposed to be a "1.0" at all.&lt;/p&gt;
-&lt;p&gt;(There was a "0.2", as well as "1.n" (and a 2.0). 0.2 got nixed because of increased discord of just about every institution on the planet (0.1 got too successful, others wanted own *bsd, those "helping" didn't like where it was heading so "slow walked" things). The magazine who commissioned 1.0 was scrupluous about avoiding conflicts, with a yanked commitment to follow-on/support while the next changes were under test - so no "1.n" - they just issued the one CDROM without anything else, which was frustrating.)&lt;/p&gt;
+&lt;p&gt;(There was a "0.2", as well as "1.n" (and a 2.0). 0.2 got nixed because of increased discord of just about every institution on the planet (0.1 got too successful, others wanted own *bsd, those "helping" didn't like where it was heading so "slow walked" things - specifically all additions had to be ascribed to us solely out of publishers issues, and many sought to not allow that because they were wrongly advised to insist on attribution). The magazine who commissioned 1.0 was scrupluous about avoiding conflicts, with a yanked commitment to follow-on/support while the next changes were under test - so no "1.n" - they just issued the one CDROM without anything else, which was frustrating.)&lt;/p&gt;
 &lt;p&gt;In general it got hard to fight all the "nos" when there weren't any "yeses".&lt;/p&gt;
 &lt;p&gt;So coincident with 1.0 was the need to reflect all the other standards without embedding any of them, because 386bsd wasn't going to follow any of those directions. Thus the need for "nonstd". Anything that didn't fit with the "core" was "compartmentalized" so as to draw a distinction/"bright line".&lt;/p&gt;
 &lt;p&gt;Is it a good idea on its own? Unsure. Since it was never noticed and thus didn't get any traction, there wasn't any feedback whatsoever. It'll continue with the ".x" release because it still serves its purpose.&lt;/p&gt;</content><category term="first"></category><category term="386bsd"></category><category term="tale"></category></entry></feed>
